@@ -1,0 +1,14 @@
+{
+  "dataset": "lfarhat/brasil-students-scholarship-prouni-20052019",
+  "versao": 1,
+  "csv_sha256": "397fb45ec457e3e02d7cf4f1e59bfbd4bd6b9d0bc17e41f6eac640fc78da2540",
+  "linhas_lidas": 2692540,
+  "ausentes_ano": 0,
+  "ausentes_tipo_bolsa": 0,
+  "ausentes_modalidade": 0,
+  "ausentes_regiao_origem": 402,
+  "ausentes_uf": 402,
+  "regioes_declaradas_divergentes": 0,
+  "bolsas_processadas": 2692540,
+  "grupos_processados": 1629
+}

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Artigo acadêmico sobre a evolução, a distribuição por UF e a participação da EaD nas bolsas do ProUni entre 2005 e 2019.">
+  <meta name="author" content="Wikten Alves">
+  <meta name="keywords" content="ProUni, bolsas de estudo, ensino superior, educação a distância, análise exploratória">
+  <title>Bolsas do ProUni no Brasil (2005–2019)</title>
+  <link rel="stylesheet" href="assets/artigo.css">
+  <script defer src="assets/dados-graficos.js"></script>
+  <script defer src="assets/graficos.js"></script>
+</head>
+<body>
+  <a class="skip" href="#artigo">Ir para o artigo</a>
+  <header class="hero">
+    <div class="wrap">
+      <div class="identity">
+        <span>Artigo científico</span>
+        <span>6º período · 2026.2</span>
+      </div>
+      <h1>Bolsas do ProUni<br class="desktop-only"> no Brasil <span>(2005–2019)</span></h1>
+      <p class="deck">Evolução anual, distribuição geográfica e participação da educação a distância</p>
+      <p class="authors">Wikten Alves</p>
+      <p class="affiliation">Centro Universitário La Salle do Rio de Janeiro (Unilasalle-RJ)<br>Bacharelado em Sistemas de Informação · Linguagem de Programação (Análise e Visualização de Dados com Python)</p>
+      <a class="repo" href="https://github.com/wikten1/teste_manuzinha">Ver repositório no GitHub ↗</a>
+    </div>
+  </header>
+  <main id="artigo" class="wrap">
+    <div class="highlights" aria-label="Indicadores do estudo">
+      <div><strong>2.692.540</strong><span>registros de bolsas</span></div>
+      <div><strong>47,89%</strong><span>no Sudeste, entre registros com UF</span></div>
+      <div><strong>29,82%</strong><span>de participação da EaD em 2019</span></div>
+    </div>
+    <div class="opening">
+      <section class="abstract" aria-labelledby="resumo">
+        <h2 id="resumo">Resumo</h2>
+        <p>O Programa Universidade para Todos (ProUni) concede bolsas de estudo na rede privada de ensino superior. Este estudo descreve a evolução das concessões, sua distribuição pelas unidades federativas associadas aos beneficiários e a participação da educação a distância (EaD) entre 2005 e 2019. A análise utiliza a versão 1 do conjunto compilado por Leo Farhat e distribuído no Kaggle. Um pipeline em Python valida a fonte, padroniza as categorias e agrega 2.692.540 registros. O volume anual passou de 95.629 para 225.555 bolsas, com pico de 252.650 em 2015. Entre os registros com unidade federativa conhecida, 47,89% estavam associados ao Sudeste e 28,28% a São Paulo. A participação nacional da EaD aumentou de 4,99% para 29,82% entre o início e o fim da série. Os resultados mostram que a ampliação do volume ocorreu junto a uma mudança na composição por modalidade. A leitura territorial expressa a distribuição dos registros, com alcance limitado para avaliar cobertura populacional. São disponibilizadas tabelas agregadas, código e documentação para reprodução da análise.</p>
+        <p class="keywords"><strong>Palavras-chave.</strong> ProUni · Bolsas de estudo · Ensino superior · Educação a distância · Análise exploratória</p>
+      </section>
+      <nav class="toc" aria-label="Sumário">
+        <h2>Sumário</h2>
+        <ol>
+          <li><a href="#introducao">Introdução</a></li>
+          <li><a href="#metodologia">Metodologia e pipeline</a></li>
+          <li><a href="#resultados">Resultados e discussão</a></li>
+          <li><a href="#conclusao">Conclusão</a></li>
+          <li><a href="#fair">Disponibilidade e FAIR</a></li>
+          <li><a href="#referencias">Referências</a></li>
+        </ol>
+      </nav>
+    </div>
+    <article>
+      <section class="chapter" aria-labelledby="introducao">
+        <h2 id="introducao">1. Introdução</h2>
+        <p>Instituído pela Lei nº 11.096/2005, o ProUni é uma política pública de acesso ao ensino superior que concede bolsas em instituições privadas. A distribuição das concessões ao longo do tempo, entre territórios e por modalidade ajuda a descrever o alcance observado do programa nos seus primeiros 15 anos. Nesta análise, a unidade de observação é o registro de concessão de bolsa presente no CSV.</p>
+        <ol class="research">
+          <li><b>RQ1</b> Como evoluiu o total anual de bolsas registradas entre 2005 e 2019?</li>
+          <li><b>RQ2</b> Como as bolsas se distribuíram entre regiões e unidades federativas associadas aos beneficiários?</li>
+          <li><b>RQ3</b> Como variou a participação da EaD no total anual de concessões?</li>
+        </ol>
+      </section>
+
+      <section class="chapter" aria-labelledby="metodologia">
+        <h2 id="metodologia">2. Metodologia e pipeline de dados</h2>
+        <p>A fonte institucional é o Ministério da Educação (MEC). O arquivo <code>prouni_2005_2019.csv</code>, da compilação de Leo Farhat no Kaggle (versão 1), é a entrada efetivamente analisada. O pipeline valida o SHA-256 do CSV e lê cinco das 16 colunas em blocos de 150 mil registros, utilizando pandas, codificação UTF-8 e vírgula como separador.</p>
+        <p>O tratamento remove espaços nas extremidades e valida ano, modalidade, tipo de bolsa e UF. A região é derivada da UF e comparada com o campo original. Houve 402 registros sem UF e sem região, classificados como “Não informada”, com 0 divergências entre as regiões preenchidas e as derivadas. Os registros sem UF entram nas métricas nacionais e saem dos denominadores por região ou estado. O pipeline não seleciona campos como CPF mascarado e data de nascimento.</p>
+        <p>A agregação por ano, UF, região, modalidade e tipo gerou 1.629 grupos e preservou o total de registros. As linhas foram mantidas na contagem porque a distribuição não fornece um identificador único de concessão. Cada percentual de EaD usa o total do ano como denominador. A dispersão anual é medida pelo intervalo interquartil (IQR), com inspeção de valores atípicos pelo critério de 1,5 × IQR. A associação temporal é descrita pela correlação de Spearman entre os postos do ano e os da participação anual de EaD.</p>
+        <pre tabindex="0"><code>normal = normalize(chunk, audit)
+totals.update(normal.groupby(KEYS, sort=False).size().to_dict())</code></pre>
+        <p class="code-caption">Trecho de <code>src/etl.py</code>. Cada bloco contribui para a contagem acumulada por combinação de categorias.</p>
+      </section>
+
+      <section class="chapter" aria-labelledby="resultados">
+        <h2 id="resultados">3. Resultados e discussão</h2>
+        <section class="result" aria-labelledby="resultado-1">
+          <h3 id="resultado-1"><span>RQ1</span> Evolução anual das concessões</h3>
+          <p>O total passou de <strong>95.629 para 225.555</strong> registros entre 2005 e 2019, uma alta de 135,86% entre os extremos. O pico ocorreu em 2015, com 252.650 bolsas. Em 2019, a contagem caiu 6,42% em relação a 2018, evidenciando oscilações mesmo após os anos de maior crescimento.</p>
+          <figure>
+            <h4>Total de bolsas por ano</h4>
+            <div id="chart-anual" class="chart" role="group" aria-label="Gráfico interativo do total anual de bolsas. Os valores também estão disponíveis em tabela."></div>
+            <figcaption>Figura 1. Registros de concessão por ano. Elaboração própria com a base de Farhat.</figcaption>
+          </figure>
+          <p>A mediana anual foi de 176.764 bolsas. Os quartis Q1 e Q3 ficaram em 138.677 e 231.095,5, com amplitude interquartil de 92.418,5. Pelo critério adotado, nenhum ano foi sinalizado como atípico. Bolsas integrais representaram 69,70% do acumulado. A categoria histórica “Complementar 25%” soma 2.330 registros, todos em 2008.</p>
+          <details>
+            <summary>Ver tabela anual de bolsas e modalidades</summary>
+            <div class="table-wrap" tabindex="0" role="region" aria-label="Dados anuais de bolsas e modalidades">
+              <table><caption>Bolsas anuais por modalidade, 2005–2019</caption><thead><tr><th scope="col">Ano</th><th scope="col">Total</th><th scope="col">Presencial</th><th scope="col">EaD</th><th scope="col">% EaD</th></tr></thead><tbody><tr><th scope="row">2005</th><td>95.629</td><td>90.861</td><td>4.768</td><td>4,99%</td></tr><tr><th scope="row">2006</th><td>109.025</td><td>102.769</td><td>6.256</td><td>5,74%</td></tr><tr><th scope="row">2007</th><td>105.574</td><td>94.384</td><td>11.190</td><td>10,60%</td></tr><tr><th scope="row">2008</th><td>124.621</td><td>110.711</td><td>13.910</td><td>11,16%</td></tr><tr><th scope="row">2009</th><td>161.369</td><td>136.553</td><td>24.816</td><td>15,38%</td></tr><tr><th scope="row">2010</th><td>152.733</td><td>131.466</td><td>21.267</td><td>13,92%</td></tr><tr><th scope="row">2011</th><td>170.766</td><td>145.639</td><td>25.127</td><td>14,71%</td></tr><tr><th scope="row">2012</th><td>176.764</td><td>144.099</td><td>32.665</td><td>18,48%</td></tr><tr><th scope="row">2013</th><td>177.326</td><td>136.701</td><td>40.625</td><td>22,91%</td></tr><tr><th scope="row">2014</th><td>223.598</td><td>177.536</td><td>46.062</td><td>20,60%</td></tr><tr><th scope="row">2015</th><td>252.650</td><td>203.494</td><td>49.156</td><td>19,46%</td></tr><tr><th scope="row">2016</th><td>239.262</td><td>191.397</td><td>47.865</td><td>20,01%</td></tr><tr><th scope="row">2017</th><td>236.636</td><td>184.397</td><td>52.239</td><td>22,08%</td></tr><tr><th scope="row">2018</th><td>241.032</td><td>183.702</td><td>57.330</td><td>23,79%</td></tr><tr><th scope="row">2019</th><td>225.555</td><td>158.305</td><td>67.250</td><td>29,82%</td></tr></tbody></table>
+            </div>
+          </details>
+        </section>
+
+        <section class="result" aria-labelledby="resultado-2">
+          <h3 id="resultado-2"><span>RQ2</span> Concentração geográfica</h3>
+          <p>Entre os 2.692.138 registros com UF identificada, o <strong>Sudeste concentrou 47,89%</strong>. São Paulo liderou o ranking, com 761.375 bolsas (28,28%). São Paulo, Minas Gerais e Rio Grande do Sul, juntos, responderam por 48,11% dos registros com UF. O Sul (18,26%) e o Nordeste (18,08%) ficaram próximos em volume acumulado.</p>
+          <figure>
+            <h4>UFs com mais registros de bolsas</h4>
+            <picture>
+              <source media="(max-width: 480px)" srcset="assets/ranking-ufs-mobile.png" width="792" height="765">
+              <img class="ranking" src="assets/ranking-ufs.png" width="1655" height="864" loading="lazy" alt="Ranking das oito UFs com mais bolsas, liderado por São Paulo, Minas Gerais e Rio Grande do Sul. A tabela seguinte lista todas as UFs.">
+            </picture>
+            <figcaption>Figura 2. Oito UFs associadas aos maiores volumes de bolsas. Elaboração própria com a base de Farhat.</figcaption>
+          </figure>
+          <p>O indicador mede volume absoluto por UF associada ao beneficiário. Para comparar cobertura ou acesso entre estados, seria necessário combinar as contagens com denominadores comparáveis, como a população elegível. A UF do beneficiário também pode diferir da localização da instituição de ensino.</p>
+          <details>
+            <summary>Ver tabelas por região e UF</summary>
+            <div class="table-wrap" tabindex="0" role="region" aria-label="Registros por região e UF">
+              <table><caption>Registros com UF identificada, por região</caption><thead><tr><th scope="col">Região</th><th scope="col">Bolsas</th><th scope="col">Participação</th></tr></thead><tbody><tr><th scope="row">Sudeste</th><td>1.289.321</td><td>47,89%</td></tr><tr><th scope="row">Sul</th><td>491.560</td><td>18,26%</td></tr><tr><th scope="row">Nordeste</th><td>486.819</td><td>18,08%</td></tr><tr><th scope="row">Centro-Oeste</th><td>247.089</td><td>9,18%</td></tr><tr><th scope="row">Norte</th><td>177.349</td><td>6,59%</td></tr></tbody></table>
+              <table><caption>Registros por UF</caption><thead><tr><th scope="col">UF</th><th scope="col">Região</th><th scope="col">Bolsas</th><th scope="col">Participação</th></tr></thead><tbody><tr><th scope="row">SP</th><td>Sudeste</td><td>761.375</td><td>28,28%</td></tr><tr><th scope="row">MG</th><td>Sudeste</td><td>326.924</td><td>12,14%</td></tr><tr><th scope="row">RS</th><td>Sul</td><td>206.886</td><td>7,68%</td></tr><tr><th scope="row">PR</th><td>Sul</td><td>196.098</td><td>7,28%</td></tr><tr><th scope="row">BA</th><td>Nordeste</td><td>158.218</td><td>5,88%</td></tr><tr><th scope="row">RJ</th><td>Sudeste</td><td>152.339</td><td>5,66%</td></tr><tr><th scope="row">GO</th><td>Centro-Oeste</td><td>90.779</td><td>3,37%</td></tr><tr><th scope="row">SC</th><td>Sul</td><td>88.576</td><td>3,29%</td></tr><tr><th scope="row">PE</th><td>Nordeste</td><td>73.834</td><td>2,74%</td></tr><tr><th scope="row">DF</th><td>Centro-Oeste</td><td>72.583</td><td>2,70%</td></tr><tr><th scope="row">MA</th><td>Nordeste</td><td>66.257</td><td>2,46%</td></tr><tr><th scope="row">CE</th><td>Nordeste</td><td>65.433</td><td>2,43%</td></tr><tr><th scope="row">PA</th><td>Norte</td><td>60.452</td><td>2,25%</td></tr><tr><th scope="row">ES</th><td>Sudeste</td><td>48.683</td><td>1,81%</td></tr><tr><th scope="row">AM</th><td>Norte</td><td>44.937</td><td>1,67%</td></tr><tr><th scope="row">MT</th><td>Centro-Oeste</td><td>41.906</td><td>1,56%</td></tr><tr><th scope="row">MS</th><td>Centro-Oeste</td><td>41.821</td><td>1,55%</td></tr><tr><th scope="row">RN</th><td>Nordeste</td><td>33.709</td><td>1,25%</td></tr><tr><th scope="row">RO</th><td>Norte</td><td>31.138</td><td>1,16%</td></tr><tr><th scope="row">PB</th><td>Nordeste</td><td>28.388</td><td>1,05%</td></tr><tr><th scope="row">PI</th><td>Nordeste</td><td>24.739</td><td>0,92%</td></tr><tr><th scope="row">SE</th><td>Nordeste</td><td>20.824</td><td>0,77%</td></tr><tr><th scope="row">AL</th><td>Nordeste</td><td>15.417</td><td>0,57%</td></tr><tr><th scope="row">TO</th><td>Norte</td><td>14.416</td><td>0,54%</td></tr><tr><th scope="row">AC</th><td>Norte</td><td>11.292</td><td>0,42%</td></tr><tr><th scope="row">AP</th><td>Norte</td><td>9.561</td><td>0,36%</td></tr><tr><th scope="row">RR</th><td>Norte</td><td>5.553</td><td>0,21%</td></tr></tbody></table>
+            </div>
+          </details>
+        </section>
+
+        <section class="result" aria-labelledby="resultado-3">
+          <h3 id="resultado-3"><span>RQ3</span> Participação da EaD</h3>
+          <p>A participação anual da EaD cresceu de <strong>4,99% em 2005 para 29,82% em 2019</strong>, um ganho de 24,83 pontos percentuais. A maior participação ocorreu em 2019 (29,82%). No acumulado, foram 500.526 registros de EaD, equivalentes a 18,59% do total.</p>
+          <figure>
+            <h4>Participação da EaD nas bolsas anuais</h4>
+            <div id="chart-ead" class="chart" role="group" aria-label="Gráfico interativo da participação anual de EaD. A tabela anual contém os mesmos dados."></div>
+            <figcaption>Figura 3. Percentual de registros de EaD sobre o total de cada ano. Elaboração própria com a base de Farhat.</figcaption>
+          </figure>
+          <p>A correlação de Spearman entre ano e participação da EaD foi de 0,943 nas 15 observações anuais, indicando associação temporal positiva. De 2018 para 2019, o volume de EaD subiu de 57.330 para 67.250 registros, enquanto o presencial caiu de 183.702 para 158.305. As duas mudanças contribuíram para aumentar a participação da EaD, mesmo com queda no total de bolsas. A série de concessões não mede procura por modalidade nem permite atribuir a mudança a decisões específicas de política pública.</p>
+        </section>
+      </section>
+
+      <section class="chapter" aria-labelledby="conclusao">
+        <h2 id="conclusao">4. Conclusão</h2>
+        <p>Entre 2005 e 2019, o ProUni registrou um volume anual de bolsas maior no fim da série, atingiu seu pico em 2015 e concentrou quase metade dos registros geograficamente identificados no Sudeste. A composição nacional também mudou, com a EaD chegando a cerca de três em cada dez registros em 2019.</p>
+        <p>As conclusões se referem às concessões registradas. A base utilizada não permite medir quantas pessoas distintas receberam bolsas, a demanda pelo programa, a permanência ou a conclusão dos cursos. Um trabalho futuro pode estender a série e combinar concessões com dados de população elegível e de matrículas, após verificar a comparabilidade das fontes.</p>
+      </section>
+
+      <section class="chapter" aria-labelledby="fair">
+        <h2 id="fair">5. Disponibilidade dos dados e princípios FAIR</h2>
+        <dl class="fair-list">
+          <div><dt>Localizável</dt><dd>Fonte de dados identificada por autor, nome e versão. Metadados e palavras-chave no README.</dd></div>
+          <div><dt>Acessível</dt><dd>Download da base de origem pelo endpoint público do Kaggle, sem credenciais. Artigo preparado para publicação estática pelo GitHub Pages.</dd></div>
+          <div><dt>Interoperável</dt><dd>Tabela analítica em CSV gzip, auditoria em JSON UTF-8 e dicionário de variáveis.</dd></div>
+          <div><dt>Reutilizável</dt><dd>Código MIT, texto e gráficos originais CC BY 4.0, fonte Kaggle CC0 e ambiente Python com dependências congeladas.</dd></div>
+        </dl>
+        <div class="downloads">
+          <a href="assets/bolsas_agregadas.csv.gz" download>Baixar dados agregados</a>
+          <a href="assets/qualidade.json" download>Baixar auditoria do ETL</a>
+          <a href="https://github.com/wikten1/teste_manuzinha/blob/HEAD/data/data_dictionary.md">Consultar dicionário de dados</a>
+        </div>
+        <h3>Reproduzir a análise</h3>
+        <pre tabindex="0"><code>git clone https://github.com/wikten1/teste_manuzinha
+cd teste_manuzinha
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m src.etl
+python -m src.publicar</code></pre>
+        <p class="code-caption">Com Python 3.12. No Windows, ative com <code>.venv\Scripts\Activate.ps1</code> no PowerShell.</p>
+      </section>
+
+      <section class="chapter references" aria-labelledby="referencias">
+        <h2 id="referencias">6. Referências</h2>
+        <ul>
+          <li>BRASIL. <em>Lei nº 11.096, de 13 de janeiro de 2005</em>. Institui o Programa Universidade para Todos (ProUni). Brasília, DF, 2005. <a href="https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2005/lei/l11096.htm">Disponível em www.planalto.gov.br</a>. Acesso em 15 nov. 2026.</li>
+          <li>BRASIL. Ministério da Educação. <em>ProUni</em>. Portal de Dados Abertos do MEC. Brasília, DF, [s. d.]. <a href="https://dadosabertos.mec.gov.br/prouni">Disponível em dadosabertos.mec.gov.br/prouni</a>. Acesso em 15 nov. 2026.</li>
+          <li>FARHAT, L. <em>Brasil Students Scholarship – Prouni – (2005–2019)</em>. Versão 1. Kaggle, 2021. <a href="https://www.kaggle.com/datasets/lfarhat/brasil-students-scholarship-prouni-20052019">Disponível em www.kaggle.com/datasets/lfarhat/brasil-students-scholarship-prouni-20052019</a>. Acesso em 15 nov. 2026.</li>
+          <li>PANDAS DEVELOPMENT TEAM. <em>pandas 2.2.3 documentation</em>. [S. l.], 2024. <a href="https://pandas.pydata.org/pandas-docs/version/2.2.3/">Disponível em pandas.pydata.org/pandas-docs/version/2.2.3/</a>. Acesso em 15 nov. 2026.</li>
+          <li>PLOTLY TECHNOLOGIES INC. <em>Plotly Python Open Source Graphing Library</em>. [S. l.], [s. d.]. <a href="https://plotly.com/python/">Disponível em plotly.com/python/</a>. Acesso em 15 nov. 2026.</li>
+          <li>THE MATPLOTLIB DEVELOPMENT TEAM. <em>Matplotlib 3.10.8 documentation</em>. [S. l.], [s. d.]. <a href="https://matplotlib.org/3.10.8/">Disponível em matplotlib.org/3.10.8/</a>. Acesso em 15 nov. 2026.</li>
+          <li>WILKINSON, M. D. et al. The FAIR Guiding Principles for scientific data management and stewardship. <em>Scientific Data</em>, v. 3, art. 160018, 2016. <a href="https://doi.org/10.1038/sdata.2016.18">DOI 10.1038/sdata.2016.18</a>.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+  <footer>
+    <div class="wrap">
+      <p>Wikten Alves · Centro Universitário La Salle do Rio de Janeiro (Unilasalle-RJ) · 2026.2</p>
+      <p>Texto e gráficos sob <a href="https://creativecommons.org/licenses/by/4.0/deed.pt-br">CC BY 4.0</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>
